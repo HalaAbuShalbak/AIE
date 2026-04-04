@@ -3,10 +3,72 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --aie-primary: #1a4a8b;
+    --aie-primary-soft: rgba(26, 74, 139, 0.07);
+    --aie-ring: rgba(26, 74, 139, 0.22);
+    --aie-surface: #ffffff;
+    --aie-muted: #5c5c5c;
+  }
   html {
     @apply scroll-smooth;
+    scroll-padding-top: 5rem;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   body {
-    @apply bg-white text-steel antialiased;
+    @apply font-sans text-body text-steel antialiased;
+    background-color: #f4f6f9;
+    background-image:
+      radial-gradient(1100px 560px at 100% -8%, var(--aie-primary-soft), transparent 52%),
+      radial-gradient(820px 480px at -4% 28%, rgba(26, 74, 139, 0.045), transparent 48%),
+      linear-gradient(180deg, #ffffff 0%, #f4f6f9 42%, #fafbfc 100%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background-color: rgba(26, 74, 139, 0.14);
+    color: #142a4d;
+  }
+  :where(a, button, input, select, textarea, summary, [role='tab'], [tabindex]:not([tabindex='-1'])):focus-visible {
+    @apply outline-none ring-2 ring-primary/35 ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  .aie-page {
+    @apply mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14;
+  }
+  .aie-eyebrow {
+    @apply text-overline uppercase text-steel/80;
+  }
+  .aie-h1 {
+    @apply text-title-lg text-primary md:text-display md:leading-[1.12];
+  }
+  .aie-h2 {
+    @apply text-title-md text-primary;
+  }
+  .aie-lead {
+    @apply max-w-measure text-body-lg text-steel;
+  }
+  .aie-body {
+    @apply max-w-measure text-body text-steel;
+  }
+  .aie-section-head {
+    @apply flex items-center gap-2.5 border-b border-gray-200/90 pb-3.5;
+  }
+  .aie-card {
+    @apply rounded-corporate border border-gray-200/90 bg-white/95 shadow-card backdrop-blur-sm transition-all duration-300;
+    @apply hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-card-hover;
+  }
+  .aie-input {
+    @apply min-h-[2.75rem] w-full rounded-corporate border border-gray-300/95 bg-white px-3.5 py-2.5 text-body-sm text-steel shadow-sm;
+    @apply transition-[border-color,box-shadow] placeholder:text-steel/45;
+    @apply focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+  .aie-btn-primary {
+    @apply inline-flex min-h-[2.75rem] items-center justify-center gap-2 rounded-corporate bg-primary px-5 text-body-sm font-semibold text-white shadow-sm;
+    @apply transition-[opacity,transform,box-shadow] hover:opacity-[0.96] active:scale-[0.99];
+    @apply focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2;
   }
 }

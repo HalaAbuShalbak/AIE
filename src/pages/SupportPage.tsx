@@ -7,34 +7,38 @@ export function SupportPage() {
   const benefits = sponsorInfo.find((s) => s.id === 2);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
+    <div className="aie-page">
       <SectionFade>
-        <p className="text-xs font-medium uppercase tracking-wide text-steel">الصفحة 3 — الدعم والشبكة</p>
-        <h1 className="mt-2 text-2xl font-bold text-primary md:text-3xl">
-          {main?.title ?? 'الشركاء والغرف والفعاليات المتزامنة'}
-        </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-steel">{main?.description}</p>
+        <header className="max-w-measure text-right">
+          <p className="aie-eyebrow">الصفحة 3 — الدعم والشبكة</p>
+          <h1 className="aie-h1 mt-3">
+            {main?.title ?? 'الشركاء والغرف والفعاليات المتزامنة'}
+          </h1>
+          <p className="aie-lead mt-5">{main?.description}</p>
+        </header>
       </SectionFade>
 
-      <SectionFade className="mt-10">
-        <div className="grid gap-4 md:grid-cols-2">
+      <SectionFade className="mt-12 sm:mt-14">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
           {(main?.sponsors ?? []).map((s) => {
             const isBeauty = s.name === 'Beauty Jo';
             return (
               <article
                 key={s.name}
-                className={`rounded-corporate border p-5 text-right ${
+                className={`rounded-corporate border p-6 text-right shadow-sm transition-shadow ${
                   isBeauty
-                    ? 'border-accent/40 bg-white'
-                    : 'border-gray-200 bg-slate'
+                    ? 'border-accent/35 bg-white ring-1 ring-accent/10 hover:shadow-card'
+                    : 'border-gray-200/95 bg-white/95 hover:shadow-card'
                 }`}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h2 className={`text-base font-semibold ${isBeauty ? 'text-accent' : 'text-primary'}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2
+                      className={`text-title-md ${isBeauty ? 'text-accent' : 'text-primary'}`}
+                    >
                       {s.name}
                     </h2>
-                    <p className="mt-1 text-xs text-steel">{s.role}</p>
+                    <p className="mt-1.5 text-caption font-medium text-steel/90">{s.role}</p>
                   </div>
                   {isBeauty ? (
                     <Sparkles className="h-5 w-5 shrink-0 text-accent" aria-hidden />
@@ -43,7 +47,7 @@ export function SupportPage() {
                   )}
                 </div>
                 {isBeauty && (
-                  <p className="mt-3 text-xs leading-relaxed text-steel">
+                  <p className="mt-4 border-t border-gray-100 pt-4 text-body-sm leading-relaxed text-steel">
                     معرض متزامن — يُستخدم لون التمييز بشكل خفيف فقط لهذا القسم.
                   </p>
                 )}
@@ -53,21 +57,21 @@ export function SupportPage() {
         </div>
       </SectionFade>
 
-      <SectionFade className="mt-10">
-        <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+      <SectionFade className="mt-12 sm:mt-14">
+        <div className="aie-section-head">
           <TrendingUp className="h-5 w-5 text-primary" aria-hidden />
-          <h2 className="text-lg font-semibold text-primary">{benefits?.title}</h2>
+          <h2 className="aie-h2">{benefits?.title}</h2>
         </div>
-        <ul className="mt-6 space-y-3">
+        <ul className="mt-8 space-y-3" role="list">
           {(benefits?.benefits ?? []).map((b, i) => (
             <li
               key={i}
-              className="flex gap-3 rounded-corporate border border-gray-200 bg-white px-4 py-3 text-right text-sm text-steel"
+                className="flex gap-4 rounded-corporate border border-gray-200/95 bg-white/95 px-4 py-4 text-right shadow-sm transition-colors hover:border-primary/20 sm:px-5 sm:py-4"
             >
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-corporate bg-primary/10 text-xs font-bold text-primary">
+              <span className="mt-0.5 flex h-8 min-w-[2rem] items-center justify-center rounded-corporate bg-primary/10 text-caption font-bold text-primary">
                 {i + 1}
               </span>
-              <span>{b}</span>
+              <span className="text-body-sm leading-relaxed text-steel">{b}</span>
             </li>
           ))}
         </ul>

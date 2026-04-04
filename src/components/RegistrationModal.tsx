@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, CheckCircle2, Loader2 } from 'lucide-react';
 import { registrationForm } from '../../data.js';
@@ -18,6 +18,8 @@ function emptyForm(): FormState {
 
 export function RegistrationModal() {
   const { modalOpen, closeModal } = useRegistration();
+  const titleId = useId();
+  const descId = useId();
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,11 +29,16 @@ export function RegistrationModal() {
 
   useEffect(() => {
     if (!modalOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeModal();
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
   }, [modalOpen, closeModal]);
 
   useEffect(() => {
@@ -104,11 +111,11 @@ export function RegistrationModal() {
   return (
     <AnimatePresence>
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center sm:p-6">
           <motion.button
             type="button"
-            aria-label="إغلاق"
-            className="absolute inset-0 bg-black/40"
+            aria-label="إغلاق النافذة"
+            className="absolute inset-0 bg-slate-900/45 backdrop-blur-[2px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -118,60 +125,64 @@ export function RegistrationModal() {
           <motion.div
             role="dialog"
             aria-modal="true"
-            aria-labelledby="registration-title"
-            className="relative z-10 w-full max-w-md overflow-hidden rounded-corporate border border-gray-200 bg-white shadow-xl"
+            aria-labelledby={titleId}
+            aria-describedby={success ? undefined : descId}
+            className="relative z-10 flex max-h-[min(92vh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-corporate border border-gray-200/95 bg-white shadow-card-hover"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="flex items-center justify-between border-b border-gray-100 bg-slate px-4 py-3">
-              <h2 id="registration-title" className="text-base font-semibold text-primary">
-                {success ? 'تم التسجيل' : 'Industrial Pass — تسجيل'}
-              </h2>
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-l from-slate/90 to-white px-5 py-4 sm:px-6">
+              <div className="min-w-0 text-right">
+                <h2 id={titleId} className="text-title-md text-primary">
+                  {success ? 'تم التسجيل بنجاح' : 'Industrial Pass'}
+                </h2>
+                {!success && (
+                  <p id={descId} className="mt-1 text-caption text-steel/90">
+                    بياناتك تُستخدم لإصدار بطاقة دخول رقمية عبر البريد.
+                  </p>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={closeModal}
-                className="rounded-corporate p-1 text-steel hover:bg-gray-200"
+                className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-corporate text-steel transition-colors hover:bg-gray-100"
                 aria-label="إغلاق"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="p-4">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6 sm:py-6">
               {success ? (
-                <div className="space-y-4 text-center">
-                  <CheckCircle2 className="mx-auto h-12 w-12 text-primary" aria-hidden />
-                  <p className="text-sm text-steel">
+                <div className="space-y-5 text-center">
+                  <CheckCircle2 className="mx-auto h-14 w-14 text-primary" aria-hidden />
+                  <p className="text-body-sm leading-relaxed text-steel">
                     {demoMode
-                      ? 'تم حفظ بياناتك محلياً. أضف مفاتيح EmailJS في ملف البيئة لإرسال البريد تلقائياً.'
+                      ? 'تم تجهيز بطاقة الدخول. أضف مفاتيح EmailJS في ملف البيئة لإرسال البريد تلقائياً.'
                       : 'تم إرسال بطاقة الدخول إلى بريدك الإلكتروني.'}
                   </p>
                   <button
                     type="button"
                     onClick={handleDownload}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-corporate border border-primary bg-white px-4 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5"
+                    className="inline-flex w-full min-h-[2.75rem] items-center justify-center gap-2 rounded-corporate border border-primary bg-white px-4 text-body-sm font-semibold text-primary shadow-sm transition-colors hover:bg-primary/5"
                   >
-                    <Download className="h-4 w-4" />
+                    <Download className="h-4 w-4" aria-hidden />
                     تحميل البادج (نموذج HTML)
                   </button>
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="w-full rounded-corporate bg-primary py-2.5 text-sm font-medium text-white hover:opacity-90"
-                  >
+                  <button type="button" onClick={closeModal} className="aie-btn-primary w-full">
                     إغلاق
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <p className="text-xs text-steel">
-                    نموذج مهني للحصول على بطاقة الدخول الصناعية. البريد الإلكتروني إلزامي.
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <p className="text-body-sm leading-relaxed text-steel">
+                    نموذج موجز لطلب بطاقة الدخول. جميع الحقول إلزامية بما فيها البريد المهني.
                   </p>
                   {registrationForm.fields.map((field) => (
                     <div key={field.name}>
-                      <label htmlFor={field.name} className="mb-1 block text-sm font-medium text-primary">
+                      <label htmlFor={field.name} className="mb-1.5 block text-right text-body-sm font-semibold text-primary">
                         {field.label}
                         <span className="text-red-600"> *</span>
                       </label>
@@ -181,9 +192,9 @@ export function RegistrationModal() {
                           required
                           value={form[field.name] ?? ''}
                           onChange={(ev) => handleChange(field.name, ev.target.value)}
-                          className="w-full rounded-corporate border border-gray-300 bg-white px-3 py-2 text-sm text-steel focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="aie-input cursor-pointer"
                         >
-                          <option value="">— اختر —</option>
+                          <option value="">— اختر القطاع —</option>
                           {field.options.map((opt) => (
                             <option key={opt} value={opt}>
                               {opt}
@@ -197,7 +208,7 @@ export function RegistrationModal() {
                           required={field.name === 'email' || field.type === 'text'}
                           value={form[field.name] ?? ''}
                           onChange={(ev) => handleChange(field.name, ev.target.value)}
-                          className="w-full rounded-corporate border border-gray-300 px-3 py-2 text-sm text-steel focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="aie-input"
                           autoComplete={
                             field.name === 'email'
                               ? 'email'
@@ -211,19 +222,15 @@ export function RegistrationModal() {
                   ))}
 
                   {error && (
-                    <p className="text-sm text-red-600" role="alert">
+                    <p className="rounded-corporate border border-red-200 bg-red-50 px-3 py-2.5 text-body-sm text-red-700" role="alert">
                       {error}
                     </p>
                   )}
 
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="flex w-full items-center justify-center gap-2 rounded-corporate bg-primary py-2.5 text-sm font-medium text-white disabled:opacity-60"
-                  >
+                  <button type="submit" disabled={submitting} className="aie-btn-primary w-full disabled:opacity-60">
                     {submitting ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
                         جاري الإرسال...
                       </>
                     ) : (
