@@ -1,0 +1,13 @@
+# Netlify: run build from this folder (set "Base directory" to AIE if the repo root is above this app).
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA: let React Router handle client-side routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
